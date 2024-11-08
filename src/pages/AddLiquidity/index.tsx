@@ -19,6 +19,7 @@ import usePrevious from 'hooks/usePrevious'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { BodyWrapper } from 'pages/AppBody'
 import { PositionPageUnsupportedContent } from 'pages/Pool/PositionPage'
+import { Pool } from '@vnaysn/jediswap-sdk-v3'
 import {
   useRangeHopCallbacks,
   useV3DerivedMintInfo,
@@ -301,7 +302,13 @@ function AddLiquidity() {
     }
   }, [mintCallData])
 
+  async function createAutoPool() {
+
+  }
+
   async function onAdd() {
+//    console.log(Pool.getAddress(, '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7', FeeAmount.HIGH))
+
     if (!chainId || !account) {
       return
     }
@@ -363,6 +370,42 @@ function AddLiquidity() {
         const callData = []
         if (noLiquidity) {
           //create and initialize pool
+          
+          const key = {
+            pool: '0x205ce6fdb25c60953c946d9a01390915e63d00968478f340689cf0677a49fd',
+            tick_lower: 74000,
+            tick_upper: 75600,
+          }
+
+          const action = {
+            mode: 3,
+            exit_strategy: [],
+            rebase_strategy: [],
+            liquidity_distribution: []
+          }
+
+          let fee0 = 0
+          let fee1 = 0
+          let isCompound = false
+          let isPrivate = false
+
+          const initializeDataAutoPool = {
+            key,
+            action,
+            fee0,
+            fee1,
+            isCompound,
+            isPrivate
+          }
+
+          const initializeCallDataAutoPool = CallData.compile(initializeDataAutoPool)
+          const icallsAutoPools = {
+            contractAddress: router_address,
+            entrypoint: 'create_and_initialize_pool',
+            calldata: initializeCallDataAutoPool,
+          }
+          callData.push(icallsAutoPools)
+
           const initializeData = {
             token0: position.pool.token0.address,
             token1: position.pool.token1.address,
