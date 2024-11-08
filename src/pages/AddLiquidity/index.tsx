@@ -378,7 +378,7 @@ function AddLiquidity() {
           }
           callData.push(icalls)
         }
-        //mint position
+        // //mint position
         const mintData = {
           token0: position.pool.token0.address,
           token1: position.pool.token1.address,
@@ -398,7 +398,31 @@ function AddLiquidity() {
           contractAddress: router_address,
           entrypoint: 'mint',
           calldata: mintCallData,
+          
         }
+
+        const createStrategy = {
+          key: cairo.tuple(
+            '0x205ce6fdb25c60953c946d9a01390915e63d00968478f340689cf0677a49fd',
+            toI32(position.tickLower),
+            toI32(position.tickUpper)
+          ),
+          actions: cairo.tuple(cairo.uint256(1), [], [], []),
+          management_fee: cairo.uint256(0),
+          performance_fee: cairo.uint256(0),
+          is_compound: 0,
+          is_private: 0,
+        }
+
+        console.log('createStrategy', createStrategy)
+        const createStrategyCallData = CallData.compile(createStrategy)
+        const createStrategyCalls = {
+          contractAddress: '0x017f27c895a91af4a52c707e6da1533ffaaf6f29130f56db57fc291b64b55a24',
+          entrypoint: 'create_strategy',
+          calldata: createStrategyCallData,
+        }
+        callData.push(createStrategyCalls)
+
         if (approvalA && approvalB) {
           callData.push(approvalA, approvalB, mcalls)
         } else {
@@ -410,7 +434,6 @@ function AddLiquidity() {
         }
         setMintCallData(callData)
       }
-
       setAttemptingTxn(true)
     } else {
       return
@@ -695,12 +718,11 @@ function AddLiquidity() {
                         handleFeePoolSelect={handleFeePoolSelect}
                       />
 
-                      <ModeSelector   
+                      <ModeSelector
                         disabled={!quoteCurrency || !baseCurrency}
                         feeAmount={feeAmount}
                         handleFeePoolSelect={handleFeePoolSelect}
                       />
-                      
                     </AutoColumn>{' '}
                   </>
                 )}
