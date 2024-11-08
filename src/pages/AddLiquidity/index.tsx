@@ -78,6 +78,7 @@ import { getClient } from 'apollo/client'
 import { TOKENS_DATA } from 'apollo/queries'
 import { isAddressValidForStarknet } from 'utils/addresses'
 import { findClosestPrice } from 'utils/getClosest'
+import { A51_ABI, A51_ADDRESS } from '../../contracts/a51/index'
 
 const DEFAULT_ADD_IN_RANGE_SLIPPAGE_TOLERANCE = new Percent(50, 10_000)
 
@@ -307,8 +308,49 @@ function AddLiquidity() {
   }
 
   async function onAdd() {
-//    console.log(Pool.getAddress(, '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7', FeeAmount.HIGH))
+    console.log('on add')
+    const callDataA51 = []
 
+    const key = {
+      pool: '0x205ce6fdb25c60953c946d9a01390915e63d00968478f340689cf0677a49fd',
+      tick_lower: 74000,
+      tick_upper: 75600,
+    }
+
+    const action = {
+      mode: 3,
+      exit_strategy: [],
+      rebase_strategy: [],
+      liquidity_distribution: []
+    }
+
+    let fee0 = 0
+    let fee1 = 0
+    let isCompound = 0
+    let isPrivate = 0
+
+    const initializeDataAutoPool = {
+      key,
+      action,
+      fee0,
+      fee1,
+      isCompound,
+      isPrivate
+    }
+
+    const initializeCallDataAutoPool = CallData.compile(initializeDataAutoPool)
+    const icallsAutoPools = {
+      contractAddress: A51_ADDRESS[chainId ?? DEFAULT_CHAIN_ID],
+      entrypoint: 'create_strategy',
+      calldata: initializeCallDataAutoPool,
+    }
+    callDataA51.push(icallsAutoPools)  
+
+    console.log('on tx', callDataA51)
+    setMintCallData(callDataA51)
+
+
+    
     if (!chainId || !account) {
       return
     }
@@ -358,53 +400,18 @@ function AddLiquidity() {
         }
 
         if (approvalA && approvalB) {
-          setMintCallData([approvalA, approvalB, calls])
+          //setMintCallData([approvalA, approvalB, calls])
         } else {
           if (approvalA) {
-            setMintCallData([approvalA, calls])
+            //setMintCallData([approvalA, calls])
           } else if (approvalB) {
-            setMintCallData([approvalB, calls])
+            //setMintCallData([approvalB, calls])
           }
         }
       } else {
         const callData = []
         if (noLiquidity) {
           //create and initialize pool
-          
-          const key = {
-            pool: '0x205ce6fdb25c60953c946d9a01390915e63d00968478f340689cf0677a49fd',
-            tick_lower: 74000,
-            tick_upper: 75600,
-          }
-
-          const action = {
-            mode: 3,
-            exit_strategy: [],
-            rebase_strategy: [],
-            liquidity_distribution: []
-          }
-
-          let fee0 = 0
-          let fee1 = 0
-          let isCompound = false
-          let isPrivate = false
-
-          const initializeDataAutoPool = {
-            key,
-            action,
-            fee0,
-            fee1,
-            isCompound,
-            isPrivate
-          }
-
-          const initializeCallDataAutoPool = CallData.compile(initializeDataAutoPool)
-          const icallsAutoPools = {
-            contractAddress: router_address,
-            entrypoint: 'create_and_initialize_pool',
-            calldata: initializeCallDataAutoPool,
-          }
-          callData.push(icallsAutoPools)
 
           const initializeData = {
             token0: position.pool.token0.address,
@@ -451,14 +458,18 @@ function AddLiquidity() {
             callData.push(approvalB, mcalls)
           }
         }
-        setMintCallData(callData)
+  
+        //setMintCallData(callData)
       }
+
+      
 
       setAttemptingTxn(true)
     } else {
       return
     }
   }
+
 
   const handleCurrencySelect = useCallback(
     (currencyNew: Currency, currencyIdOther?: string): (string | undefined)[] => {

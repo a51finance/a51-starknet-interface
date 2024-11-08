@@ -9,6 +9,7 @@ import NFTPositionManagerABI from 'contracts/nonfungiblepositionmanager/abi.json
 import ERC20_ABI from 'abis/erc20.json'
 import PAIR_ABI from 'constants/abis/Pair.json'
 import { ROUTER_ABI } from 'contracts/routerAddress'
+import { A51_ABI, A51_ADDRESS } from 'contracts/a51'
 
 // returns null on errors
 function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
@@ -45,6 +46,13 @@ export function useRouterContract(): Contract | null {
 
   return useContract(SWAP_ROUTER_ADDRESS_V1[chainId ?? DEFAULT_CHAIN_ID], ROUTER_ABI, true)
 }
+
+export function useA51Contract(): Contract | null {
+  const { account, chainId } = useAccountDetails()
+
+  return useContract(A51_ADDRESS[chainId ?? DEFAULT_CHAIN_ID], A51_ABI, true)
+}
+
 
 export function useMulticallContract(): Contract | null {
   const { chainId } = useAccountDetails()
