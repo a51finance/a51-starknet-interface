@@ -152,6 +152,7 @@ export default function Pool() {
 
   const initialShowMyPos = location.pathname === '/positions' ? true : false
   const [showMyPositions, setShowMyPositions] = useState<boolean>(initialShowMyPos)
+  //const [temp, setShowMyPositions] = useState<boolean>(initialShowMyPos)
   const [searchQuery, setSearchQuery] = useState('')
   const [showRewardedOnly, setShowRewardedOnly] = useState(false)
   const [globalPoolsData, setGlobalPoolsData] = useState<any>({})
@@ -253,22 +254,6 @@ export default function Pool() {
   const showConnectAWallet = Boolean(!address)
   const poolsTable = (
     <div>
-      <OnlyRewardedSwitcherContainer>
-        <OnlyRewardedSwitcherLabel>Only Pools with Rewards</OnlyRewardedSwitcherLabel>
-        <OnlyRewardedSwitcher
-          onChange={(checked) => setShowRewardedOnly(checked)}
-          checked={showRewardedOnly}
-          handleDiameter={20}
-          uncheckedIcon={false}
-          checkedIcon={false}
-          width={35}
-          height={14}
-          offHandleColor={'#959595'}
-          onHandleColor={'#50D5FF'}
-          offColor={'#372554'}
-          onColor={'#26346d'}
-        />
-      </OnlyRewardedSwitcherContainer>
       <Panel style={{ padding: '0', fontWeight: 700, fontSize: '0.875rem' }}>
         <Pools
           pairs={poolsData}
@@ -340,6 +325,15 @@ export default function Pool() {
             </ResponsiveButtonTabs>
             <ResponsiveButtonTabs
               secondary={true}
+              //active={showMyPositions}
+              // onClick={() => setShowMyPositions(true)}
+              //onClick={() => navigate('/positions')}
+              style={{ fontSize: '0.875rem' }}
+            >
+              <Trans>My Auto-Pools</Trans>
+            </ResponsiveButtonTabs>
+            <ResponsiveButtonTabs
+              secondary={true}
               active={showMyPositions}
               // onClick={() => setShowMyPositions(true)}
               onClick={() => navigate('/positions')}
@@ -359,7 +353,7 @@ export default function Pool() {
               to="/add/ETH"
               style={{ fontSize: '1.125rem', fontWeight: 750 }}
             >
-              + <Trans>New position</Trans>
+              <Trans>Create Auto-Pool</Trans>
             </ResponsiveButtonPrimary>
           </ButtonRow>
           <MainContentWrapper>
@@ -368,9 +362,6 @@ export default function Pool() {
                 <PositionsLoadingPlaceholder />
               ) : (
                 <>
-                  <MigrateButton as={Link} to="/migrate">
-                    Migrate v1 Liquidity
-                  </MigrateButton>
                   <PositionDetails
                     tokenIds={tokenIds}
                     showConnectAWallet={showConnectAWallet}

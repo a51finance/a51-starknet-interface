@@ -14,7 +14,7 @@ import {
   updateChainId,
 } from './reducer'
 import { useAppDispatch, useAppSelector } from '../hooks'
-import teahouseLogo from '../../assets/vaults/teahouse.svg'
+import teahouseLogo from '../../assets/vaults/logo.svg'
 import { useAccountBalance, useAccountDetails } from '../../hooks/starknet-react'
 import formatBalance from '../../utils/formatBalance'
 import { Field } from './actions'
@@ -89,7 +89,7 @@ const getVaultListWithContents = async (
 
     data.poolAddress = vault.poolAddress
     data.defaultSlippage = vault.defaultSlippage
-    data.details = vault.details
+    data.details = "A51's single-sided strategy that gives you the best returns."
     data.feeTier = vault.feeTier
     data.mainAssetKey = `token${vault.mainAssetIndex}`
     data.links = vault.links
@@ -102,7 +102,7 @@ const getVaultListWithContents = async (
     data.type = vault.type
     data.chainId = ChainId.MAINNET
     data.provider = {
-      name: 'Teahouse',
+      name: 'A51 Finance',
       logo: teahouseLogo,
     }
     result[shareAddress] = data as Vault

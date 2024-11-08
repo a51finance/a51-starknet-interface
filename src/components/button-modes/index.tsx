@@ -349,13 +349,18 @@ export function ButtonRadioChecked({ active = false, children, ...rest }: { acti
 
   if (!active) {
     return (
-      <ButtonOutlined $borderRadius="12px" padding="12px 8px" {...rest}>
-        <RowBetween>{children}</RowBetween>
-      </ButtonOutlined>
+      <ActiveOutlined {...rest} padding="12px 8px" $borderRadius="12px" border='1px solid #444'>
+      <RowBetween>
+        {children}
+      </RowBetween>
+    </ActiveOutlined>
+      // <ButtonOutlined $borderRadius="12px" padding="12px 8px" border='1px solid #444' {...rest} >
+      //   <RowBetween>{children}</RowBetween>
+      // </ButtonOutlined>
     )
   }
   return (
-    <ActiveOutlined {...rest} padding="12px 8px" $borderRadius="12px">
+    <ActiveOutlined {...rest} padding="12px 8px" $borderRadius="12px" border='1px solid #444'>
       <RowBetween>
         {children}
         <CheckboxWrapper>
