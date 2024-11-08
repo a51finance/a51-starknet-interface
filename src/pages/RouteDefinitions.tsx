@@ -61,13 +61,14 @@ function createRouteDefinition(route: Partial<RouteDefinition>): RouteDefinition
 }
 
 export const routes: RouteDefinition[] = [
+ 
+  createRouteDefinition({ path: '/positions', getElement: () => <Pool /> }),
   createRouteDefinition({ path: '/swap', getElement: () => <Pool /> }),
   createRouteDefinition({ path: '/swap/:outputCurrency', getElement: () => <RedirectToSwap /> }),
   createRouteDefinition({ path: '/pools', getElement: () => <Pool /> }),
   createRouteDefinition({ path: '/pools/:poolId', getElement: () => <PoolDetails /> }),
   createRouteDefinition({ path: '/pool', getElement: () => <Navigate to="/pools" replace={true} /> }),
   createRouteDefinition({ path: '/pool/:poolId', getElement: () => <PoolDetails /> }),
-  createRouteDefinition({ path: '/positions', getElement: () => <Pool /> }),
   createRouteDefinition({ path: '/positions/:tokenId', getElement: () => <PositionPage /> }),
   createRouteDefinition({ path: '/vaults', getElement: () => <Vaults /> }),
   createRouteDefinition({ path: '/vaults/:vaultId', getElement: () => <Vault /> }),
