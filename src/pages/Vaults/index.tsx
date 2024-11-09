@@ -74,6 +74,7 @@ const VaultLink = styled(Link)`
 
 const ProviderLogo = styled.img`
   user-select: none;
+  width: 45px;
   max-width: 100%;
 `
 
