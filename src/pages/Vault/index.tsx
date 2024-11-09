@@ -569,6 +569,7 @@ export default function Vault({ className }: { className?: string }) {
                   {/* update later - img takes time to load issue */}
                   <VaultStrategyType>{currentVault?.strategyType}</VaultStrategyType>
                   <VaultStrategyDetail dangerouslySetInnerHTML={{ __html: sanitizedStrategyDetails }} />
+                  {/**
                   <VaultStrategyLinks>
                     <a
                       href={`https://${chainId === ChainId.GOERLI ? 'sepolia.' : ''}starkscan.co/contract/${
@@ -581,8 +582,9 @@ export default function Vault({ className }: { className?: string }) {
                     </a>
                     <a href={currentVault?.links.details} target={'_blank'} rel="noreferrer">
                       View Details
-                    </a>
+                    </a>  
                   </VaultStrategyLinks>
+                  */}
                 </VaultDetailsBottom>
               </VaultDetailsContainer>
               <VaultTransactionPanel>
