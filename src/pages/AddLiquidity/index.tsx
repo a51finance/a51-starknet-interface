@@ -398,6 +398,7 @@ function AddLiquidity() {
           contractAddress: router_address,
           entrypoint: 'mint',
           calldata: mintCallData,
+          
         }
 
         const createStrategy = {
