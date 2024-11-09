@@ -64,8 +64,8 @@ const PositionPageButtonPrimary = styled(ButtonPrimary)`
 const PageWrapper = styled.div`
   padding: 68px 16px 16px 16px;
 
-  min-width: 800px;
-  max-width: 960px;
+  min-width: 850px;
+  max-width: 950px;
 
   @media only screen and (max-width: ${({ theme }) => `${theme.breakpoint.md}px`}) {
     min-width: 100%;
@@ -792,6 +792,10 @@ function PositionPageContent() {
     return false
   }, [ownerOf, address])
 
+  const handleRebalance = useCallback(() => {
+    console.log('REBALANCE')
+  }, [])
+
   // check if price is within range
   const below = pool && typeof tickLower === 'number' ? pool.tickCurrent < tickLower : undefined
   const above = pool && typeof tickUpper === 'number' ? pool.tickCurrent >= tickUpper : undefined
@@ -862,6 +866,9 @@ function PositionPageContent() {
               </PositionLabelRow>
               {ownsNFT && (
                 <ActionButtonResponsiveRow>
+                  <SmallButtonPrimary onClick={handleRebalance} style={{ marginRight: '8px' }}>
+                    <Trans>Rebalance</Trans>
+                  </SmallButtonPrimary>
                   {currency0 && currency1 && feeAmount && tokenId ? (
                     <SmallButtonPrimary
                       as={Link}
