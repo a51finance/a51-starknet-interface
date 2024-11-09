@@ -74,6 +74,7 @@ const VaultLink = styled(Link)`
 
 const ProviderLogo = styled.img`
   user-select: none;
+  width: 45px;
   max-width: 100%;
 `
 
@@ -422,6 +423,7 @@ const getVaultDetails = ({
       ids.push(currency0?.address, currency1?.address)
       const graphqlClient = getClient(chainId)
       let result = await graphqlClient.query({
+        //@ts-ignore
         query: TOKENS_DATA({ tokenIds: ids }),
         // fetchPolicy: 'cache-first',
       })
