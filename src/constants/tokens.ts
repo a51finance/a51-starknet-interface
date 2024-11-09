@@ -54,6 +54,11 @@ export const NONFUNGIBLE_POOL_MANAGER_ADDRESS: { [chainId in ChainId]: string } 
   [ChainId.MAINNET]: '0x0469b656239972a2501f2f1cd71bf4e844d64b7cae6773aa84c702327c476e5b',
   [ChainId.GOERLI]: '0x024fd9721eea36cf8cebc226fd9414057bbf895b47739822f849f622029f9399',
 }
+//A51 cltBase Address for create strategy
+export const A51_CLT_BASE_ADDRESS: { [chainId in ChainId]: string } = {
+  [ChainId.MAINNET]: '',
+  [ChainId.GOERLI]: '0x017f27c895a91af4a52c707e6da1533ffaaf6f29130f56db57fc291b64b55a24',
+}
 export const SWAP_ROUTER_ADDRESS_V2 = {
   [ChainId.MAINNET]: '0x0359550b990167afd6635fa574f3bdadd83cb51850e1d00061fe693158c23f80',
   [ChainId.GOERLI]: '0x03c8e56d7f6afccb775160f1ae3b69e3db31b443e544e56bd845d8b3b3a87a21',
