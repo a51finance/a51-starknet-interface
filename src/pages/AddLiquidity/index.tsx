@@ -45,7 +45,12 @@ import Row, { RowBetween, RowFixed } from '../../components/Row'
 import { SwitchLocaleLink } from '../../components/SwitchLocaleLink'
 import TransactionConfirmationModal, { ConfirmationModalContent } from '../../components/TransactionConfirmationModal'
 import { ZERO_PERCENT } from '../../constants/misc'
-import { DEFAULT_CHAIN_ID, NONFUNGIBLE_POOL_MANAGER_ADDRESS, WRAPPED_NATIVE_CURRENCY } from '../../constants/tokens'
+import {
+  A51_CLT_BASE_ADDRESS,
+  DEFAULT_CHAIN_ID,
+  NONFUNGIBLE_POOL_MANAGER_ADDRESS,
+  WRAPPED_NATIVE_CURRENCY,
+} from '../../constants/tokens'
 import { useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback'
 import { useArgentWalletContract } from '../../hooks/useArgentWalletContract'
@@ -77,6 +82,7 @@ import { getClient } from 'apollo/client'
 import { TOKENS_DATA } from 'apollo/queries'
 import { isAddressValidForStarknet } from 'utils/addresses'
 import { findClosestPrice } from 'utils/getClosest'
+import { getPoolAddress } from 'hooks/usePools'
 
 const DEFAULT_ADD_IN_RANGE_SLIPPAGE_TOLERANCE = new Percent(50, 10_000)
 
@@ -224,6 +230,7 @@ function AddLiquidity() {
       if (position?.amount1) ids.push(position?.amount1.currency.address)
       const graphqlClient = getClient(chainId)
       let result = await graphqlClient.query({
+        //@ts-ignore
         query: TOKENS_DATA({ tokenIds: ids }),
         // fetchPolicy: 'cache-first',
       })
@@ -398,30 +405,34 @@ function AddLiquidity() {
           contractAddress: router_address,
           entrypoint: 'mint',
           calldata: mintCallData,
-          
         }
+        const poolAddress = getPoolAddress(
+          position.pool.token0,
+          position.pool.token1,
+          position.pool.fee,
+          position.pool.chainId
+        )
+        if (poolAddress) {
+          const createStrategy = {
+            key: cairo.tuple(poolAddress, toI32(position.tickLower), toI32(position.tickUpper)),
+            actions: cairo.tuple(cairo.uint256(1), [], [], []),
+            management_fee: cairo.uint256(0),
+            performance_fee: cairo.uint256(0),
+            is_compound: 0,
+            is_private: 0,
+          }
 
-        const createStrategy = {
-          key: cairo.tuple(
-            '0x205ce6fdb25c60953c946d9a01390915e63d00968478f340689cf0677a49fd',
-            toI32(position.tickLower),
-            toI32(position.tickUpper)
-          ),
-          actions: cairo.tuple(cairo.uint256(1), [], [], []),
-          management_fee: cairo.uint256(0),
-          performance_fee: cairo.uint256(0),
-          is_compound: 0,
-          is_private: 0,
+          console.log('createStrategy', createStrategy)
+          const createStrategyCallData = CallData.compile(createStrategy)
+          const createStrategyCalls = {
+            contractAddress: A51_CLT_BASE_ADDRESS[chainId ?? DEFAULT_CHAIN_ID] satisfies string,
+            entrypoint: 'create_strategy',
+            calldata: createStrategyCallData,
+          }
+          callData.push(createStrategyCalls)
+        } else {
+          console.log("POOL address doesn't computed")
         }
-
-        console.log('createStrategy', createStrategy)
-        const createStrategyCallData = CallData.compile(createStrategy)
-        const createStrategyCalls = {
-          contractAddress: '0x017f27c895a91af4a52c707e6da1533ffaaf6f29130f56db57fc291b64b55a24',
-          entrypoint: 'create_strategy',
-          calldata: createStrategyCallData,
-        }
-        callData.push(createStrategyCalls)
 
         if (approvalA && approvalB) {
           callData.push(approvalA, approvalB, mcalls)
